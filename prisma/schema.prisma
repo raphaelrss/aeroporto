@@ -1,0 +1,50 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING")
+}
+
+model aeroporto {
+  id                         Int     @id @default(autoincrement())
+  nome                       String? @db.VarChar(100)
+  cidade                     String? @db.VarChar(150)
+  pais                       String? @db.VarChar(100)
+  voo_voo_destinoToaeroporto voo[]   @relation("voo_destinoToaeroporto")
+  voo_voo_origemToaeroporto  voo[]   @relation("voo_origemToaeroporto")
+}
+
+model passageiro {
+  id        Int       @id @default(autoincrement())
+  nome      String?   @db.VarChar(50)
+  sobrenome String?   @db.VarChar(50)
+  cpf       String?   @db.VarChar(11)
+  email     String?   @db.VarChar(250)
+  telefone  String?   @db.VarChar(11)
+  reserva   reserva[]
+}
+
+model reserva {
+  id            Int         @id @default(autoincrement())
+  passageiro_id Int?
+  voo_id        Int?
+  data_reserva  DateTime?   @db.Timestamp(6)
+  status        String?     @db.VarChar(50)
+  passageiro    passageiro? @relation(fields: [passageiro_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  voo           voo?        @relation(fields: [voo_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model voo {
+  id                               Int        @id @default(autoincrement())
+  origem                           Int?
+  destino                          Int?
+  data_hora_partida                DateTime?  @db.Timestamp(6)
+  preco                            Decimal?   @db.Decimal(10, 2)
+  numero_voo                       String?    @db.VarChar(20)
+  reserva                          reserva[]
+  aeroporto_voo_destinoToaeroporto aeroporto? @relation("voo_destinoToaeroporto", fields: [destino], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  aeroporto_voo_origemToaeroporto  aeroporto? @relation("voo_origemToaeroporto", fields: [origem], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
