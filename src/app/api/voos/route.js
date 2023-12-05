@@ -8,7 +8,8 @@ export const GET = async (request) => {
     
     try {
   
-      const voos = await prisma.voo.findMany();
+      const voos = await prisma.voo.findMany({
+      });
         console.log(voos);
       return new NextResponse(JSON.stringify(voos), { status: 200 });
     } catch (err) {
