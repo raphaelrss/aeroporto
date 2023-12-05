@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { notFound } from "next/navigation";
 
 async function getData(id) {
-  const res = await fetch(`http://localhost:3000/api/voos/${id}`, {
+  const res = await fetch(`/api/voos/${id}`, {
     cache: "no-store",
   });
 
